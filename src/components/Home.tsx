@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -12,25 +14,37 @@ import {
   ListItemText,
 } from '@mui/material';
 
+import AppToolbar from './AppToolbar';
+
 const drawerWidth = 240;
 
-const onClick = () => {
-  console.log('clicked');
-};
-
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+
+  const onLoginClick = () => {
+    axios.get('/login').then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        navigate('/login');
+      }
+    });
+    console.log('clicked');
+  };
+
+  const onRegisterClick = () => {
+    navigate('/register');
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            My Futuristic App
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
+        <AppToolbar
+          onLoginClick={onLoginClick}
+          onRegisterClick={onRegisterClick}
+        />
       </AppBar>
       <Drawer
         variant="permanent"
