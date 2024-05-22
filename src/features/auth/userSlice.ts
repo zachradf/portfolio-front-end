@@ -17,6 +17,7 @@ interface RegisterData {
   name?: string | null;
   email?: string | null;
   password: string;
+  nftProfilePicture?: string;
 }
 
 export const registerUser = createAsyncThunk(

@@ -1,7 +1,8 @@
 interface User {
   username: string;
   name?: string;
-  email: string;
+  email?: string;
+  nftProfilePicture?: string;
 }
 
 export default User;

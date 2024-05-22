@@ -2,7 +2,10 @@ import { makeStyles } from '@mui/styles';
 
 const profileStyles = makeStyles((theme) => ({
   root: {
-    background: `linear-gradient(135deg, ${theme.palette.secondary.main} 30%, ${theme.palette.primary.light} 90%)`,
+    // background: `linear-gradient(135deg,  #000000 190%, #1de9b6 90%)`,
+    background: `#000000`,
+
+    // background: `linear-gradient(135deg, ${theme.palette.secondary.main} 30%, ${theme.palette.primary.light} 90%)`,
     color: theme.palette.text.primary,
     minHeight: '100vh',
     paddingTop: theme.spacing(10),

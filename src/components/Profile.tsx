@@ -7,25 +7,42 @@ import {
   Grid,
   Avatar,
 } from '@mui/material';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../app/store';
 // import AppBar from '@mui/material';
 import AppToolbar from './AppToolbar';
 import profileStyles from '../themes/profile-styles';
+import { logoutUser } from '../features/auth/authSlice';
 
 const Profile: React.FC = () => {
   const classes = profileStyles();
-
+  const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useDispatch();
+  //   const NFTProfile = useSelector(
+  //     (state: RootState) => state.auth.user?.nftProfilePicture
+  //   );
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
+  console.log('dfgdfgdfg', user, user?.nftProfilePicture);
+  //   console.log('NFTProfi le', NFTProfile);
   return (
     <>
       <AppBar position="static">
-        <AppToolbar />
+        <AppToolbar onLogoutClick={handleLogout} />
       </AppBar>
       <Box className={classes.root}>
         <Avatar
           alt="NFT Profile"
-          src="https://via.placeholder.com/150" // Replace with actual NFT image URL
+          src={user?.nftProfilePicture} // Replace with actual NFT image URL
           className={classes.avatar}
         />
+        {/* <Avatar
+          //   alt="NFT Profile"
+          src={user?.nftProfilePicture}
+          alt={`${user?.username}'s avatar`}
+        /> */}
+        {/* {user?.nftProfilePicture} */}
         <Typography variant="h4" gutterBottom>
           Username
         </Typography>

@@ -1,60 +1,23 @@
-// import React from 'react';
-// import { Toolbar, Typography, Button } from '@mui/material';
-// import { useNavigate } from 'react-router-dom';
-
-// const onLoginClick = () => {
-//   // axios.get('/login').then((response) => {
-//   //   console.log(response);
-//   //   if (response.status === 200) {
-//   //     navigate('/login');
-//   //   }
-//   // });
-//   navigate('/login');
-//   console.log('clicked');
-// };
-
-// const onRegisterClick = () => {
-//   navigate('/register');
-// };
-// const AppToolbar = ({
-//   onLoginClick,
-//   onRegisterClick,
-// }: {
-//   onLoginClick: () => void;
-//   onRegisterClick: () => void;
-// }) => {
-//   return (
-//     <Toolbar>
-//       <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-//         My Futuristic App
-//       </Typography>
-//       <Button onClick={onLoginClick} color="inherit">
-//         Login
-//       </Button>
-//       <Button onClick={onRegisterClick} color="inherit">
-//         Register
-//       </Button>
-//     </Toolbar>
-//   );
-// };
-
-// export default AppToolbar;
-import React from 'react';
 import { Toolbar, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+import { RootState } from '../app/store';
+import { useSelector } from 'react-redux';
 const AppToolbar = ({
   onLoginClick = () => {},
   onRegisterClick = () => {},
-  isAuthenticated = false,
+  onLogoutClick = () => {},
+  // isAuthenticated = false,
 }: {
   onLoginClick?: () => void;
   onRegisterClick?: () => void;
-  isAuthenticated?: boolean;
-  // sx: object;
+  onLogoutClick?: () => void;
+  // isAuthenticated?: boolean;
 }) => {
   const navigate = useNavigate();
-
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
   const handleLoginClick = () => {
     onLoginClick();
     navigate('/login');
@@ -67,12 +30,18 @@ const AppToolbar = ({
     console.log('Register clicked');
   };
 
+  const handleLogoutClick = () => {
+    onLogoutClick();
+    navigate('/');
+    console.log('Logout clicked');
+  };
+
   return (
-    <Toolbar>
+    <Toolbar sx={{ backgroundColor: '#000000' }}>
       <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
         My Futuristic App
       </Typography>
-      {!isAuthenticated && (
+      {!isAuthenticated ? (
         <>
           <Button onClick={handleLoginClick} color="inherit">
             Login
@@ -81,6 +50,10 @@ const AppToolbar = ({
             Register
           </Button>
         </>
+      ) : (
+        <Button onClick={handleLogoutClick} color="inherit">
+          Logout
+        </Button>
       )}
     </Toolbar>
   );
