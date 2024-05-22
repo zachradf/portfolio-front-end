@@ -1,8 +1,10 @@
 import { Toolbar, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import { RootState } from '../app/store';
-import { useSelector } from 'react-redux';
+import HideInfoButton from './HideInfoButton';
+import InfoIcon from './InfoIcon';
 const AppToolbar = ({
   onLoginClick = () => {},
   onRegisterClick = () => {},
@@ -40,7 +42,9 @@ const AppToolbar = ({
     <Toolbar sx={{ backgroundColor: '#000000' }}>
       <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
         My Futuristic App
+        <HideInfoButton />
       </Typography>
+      <InfoIcon text="This is a sample info icon" />
       {!isAuthenticated ? (
         <>
           <Button onClick={handleLoginClick} color="inherit">

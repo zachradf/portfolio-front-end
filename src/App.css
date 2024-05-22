@@ -36,3 +36,29 @@
     transform: rotate(360deg);
   }
 }
+
+.App-glow {
+  position: relative;
+}
+
+.App-glow:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20vh;
+  background: linear-gradient(to top, rgba(40, 44, 52, 0.8), #6effe8);
+  z-index: -1;
+  pointer-events: none;
+  animation: glow-animation 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow-animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.65;
+  }
+}

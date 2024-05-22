@@ -6,6 +6,7 @@ import {
   Container,
   Typography,
   AppBar,
+  Grid,
   Toolbar,
   Button,
   Drawer,
@@ -37,52 +38,71 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <AppToolbar
-          onLoginClick={onLoginClick}
-          onRegisterClick={onRegisterClick}
-          // sx={{ backgroundColor: 'primary.main' }}
-        />
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
+    <>
+      <Box sx={{ display: 'flex' }}>
+        <AppBar
+          position="fixed"
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        >
+          <AppToolbar
+            onLoginClick={onLoginClick}
+            onRegisterClick={onRegisterClick}
+            // sx={{ backgroundColor: 'primary.main' }}
+          />
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          sx={{
             width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
-      >
-        <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
-            {['Home', 'Profile', 'Settings', 'Logout'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+          }}
+        >
+          <Toolbar />
+          <Box sx={{ overflow: 'auto' }}>
+            <List>
+              {['Home', 'Profile', 'Settings', 'Logout'].map((text, index) => (
+                <ListItem button key={text}>
+                  <ListItemText primary={text} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Drawer>
+        <Box
+          component="main"
+          sx={{ flexGrow: 1, bgcolor: 'background.', p: 3 }}
+          className="App App-glow"
+        >
+          <Toolbar />
+          <Container>
+            <Typography variant="h4" gutterBottom>
+              Welcome to My Futuristic App
+            </Typography>
+            <Typography variant="body1">
+              This is a sleek and welcoming interface designed with Material-UI.
+              Enjoy exploring the features of this futuristic application.
+            </Typography>
+          </Container>
         </Box>
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.', p: 3 }}>
-        <Toolbar />
-        <Container>
-          <Typography variant="h4" gutterBottom>
-            Welcome to My Futuristic App
-          </Typography>
-          <Typography variant="body1">
-            This is a sleek and welcoming interface designed with Material-UI.
-            Enjoy exploring the features of this futuristic application.
-          </Typography>
-        </Container>
       </Box>
-    </Box>
+      {/* <Container>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h4" gutterBottom>
+              Welcome to My Futuristic App
+            </Typography>
+            <Typography variant="body1">
+              This is a sleek and welcoming interface designed with Material-UI.
+              Enjoy exploring the features of this futuristic application.
+            </Typography>
+          </Grid>
+        </Grid>
+      </Container> */}
+    </>
   );
 };
 
