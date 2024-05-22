@@ -7,11 +7,11 @@ import { registerUser } from '../features/auth/userSlice';
 
 // Define the types for the form data
 interface FormData {
-  name: string;
+  name?: string | null;
   username: string;
-  email: string;
+  email?: string | null;
   password: string;
-  confirmPassword: string;
+  //   confirmPassword: string;
 }
 
 const Registration: React.FC = () => {
@@ -20,7 +20,7 @@ const Registration: React.FC = () => {
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    // confirmPassword: '',
   });
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +34,7 @@ const Registration: React.FC = () => {
     e.preventDefault();
     const resultAction = await dispatch(registerUser(formData));
     if (registerUser.fulfilled.match(resultAction)) {
-      navigate(`/profile/${resultAction.payload.name}`);
+      navigate(`/profile/${resultAction.payload.username}`);
     }
   };
 

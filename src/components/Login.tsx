@@ -1,10 +1,12 @@
 // src/components/LoginComponent.tsx
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, logout } from '../features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { loginUser, logoutUser } from '../features/auth/authSlice';
 import { RootState, AppDispatch } from '../app/store';
 
 const LoginComponent: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const auth = useSelector((state: RootState) => state.auth);
   const [credentials, setCredentials] = useState({
@@ -19,13 +21,17 @@ const LoginComponent: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(login(credentials));
+    // dispatch(loginUser(credentials));
+    const resultAction = await dispatch(loginUser(credentials));
+    if (loginUser.fulfilled.match(resultAction)) {
+      navigate(`/profile/${resultAction.payload.username}`);
+    }
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser());
   };
 
   return (

@@ -14,15 +14,15 @@ const initialState: AuthState = {
 
 interface RegisterData {
   username: string;
-  name?: string;
-  email?: string;
+  name?: string | null;
+  email?: string | null;
   password: string;
-  // confirmPassword: string;
 }
 
 export const registerUser = createAsyncThunk(
   'user/registerUser',
   async (formData: RegisterData) => {
+    console.log(formData);
     const response = await axios.post('/api/users', formData);
     return response.data as User;
   }

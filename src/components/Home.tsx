@@ -22,12 +22,13 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const onLoginClick = () => {
-    axios.get('/login').then((response) => {
-      console.log(response);
-      if (response.status === 200) {
-        navigate('/login');
-      }
-    });
+    // axios.get('/login').then((response) => {
+    //   console.log(response);
+    //   if (response.status === 200) {
+    //     navigate('/login');
+    //   }
+    // });
+    navigate('/login');
     console.log('clicked');
   };
 
@@ -44,6 +45,7 @@ const Home: React.FC = () => {
         <AppToolbar
           onLoginClick={onLoginClick}
           onRegisterClick={onRegisterClick}
+          // sx={{ backgroundColor: 'primary.main' }}
         />
       </AppBar>
       <Drawer
@@ -68,10 +70,7 @@ const Home: React.FC = () => {
           </List>
         </Box>
       </Drawer>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
-      >
+      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.', p: 3 }}>
         <Toolbar />
         <Container>
           <Typography variant="h4" gutterBottom>
