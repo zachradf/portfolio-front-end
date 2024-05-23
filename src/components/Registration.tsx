@@ -26,9 +26,10 @@ const Registration: React.FC = () => {
     nftProfilePicture: '',
     // confirmPassword: '',
   });
+  const state = useSelector((state: RootState) => state);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const status = useSelector((state: RootState) => state.user.status);
+  const status = useSelector((state: RootState) => state.auth.status);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,7 +38,7 @@ const Registration: React.FC = () => {
   function canvasToDataURL(canvas: HTMLCanvasElement): string {
     return canvas.toDataURL('image/png');
   }
-
+  console.log('status', status, state);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const nftProfilePicture = await drawAvatar(formData.username);

@@ -44,13 +44,13 @@ const Profile: React.FC = () => {
         /> */}
         {/* {user?.nftProfilePicture} */}
         <Typography variant="h4" gutterBottom>
-          Username
+          {user?.username}
         </Typography>
         <Container>
           <Grid container spacing={4}>
             <Grid item xs={12} md={6}>
               <Box className={`${classes.section} ${classes.leftSection}`}>
-                {/* Left section content goes here */}
+                {user?.walletAddress}
               </Box>
             </Grid>
             <Grid item xs={12} md={6}>

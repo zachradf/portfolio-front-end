@@ -3,6 +3,7 @@ interface User {
   name?: string;
   email?: string;
   nftProfilePicture?: string;
+  walletAddress?: string;
 }
 
 export default User;
