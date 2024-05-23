@@ -16,18 +16,35 @@ const InfoIcon: React.FC<InfoIconProps> = ({ text, code }) => {
   return (
     <Tooltip
       title={
-        <Box>
+        <Box sx={{ maxWidth: '600px' }}>
           <Typography variant="body2">{text}</Typography>
           {code && (
-            <Box mt={2}>
-              <Typography variant="body2" component="pre">
-                {code}
-              </Typography>
+            <Box
+              mt={2}
+              sx={{
+                backgroundColor: '#000000',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                padding: '10px',
+                fontFamily: 'monospace',
+                whiteSpace: 'pre-wrap',
+                overflowX: 'auto',
+                color: '#FFA500',
+              }}
+            >
+              {code}
             </Box>
           )}
         </Box>
       }
       arrow
+      sx={{
+        [`& .MuiTooltip-tooltip`]: {
+          maxWidth: '600px', // Adjust the max-width as needed
+          fontSize: '1rem', // Adjust the font size as needed
+          color: '#000000',
+        },
+      }}
     >
       <IconButton>
         <InfoOutlinedIcon />

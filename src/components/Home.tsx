@@ -1,40 +1,32 @@
 import React from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Container,
-  Typography,
-  AppBar,
-  Grid,
-  Toolbar,
-  Button,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-} from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { Box, Container, Typography, AppBar, Toolbar } from '@mui/material';
 
 import AppToolbar from './AppToolbar';
+import Dashboard from './Dashboard';
+import DashboardBox from './DashboardBox';
+import SideMenu from './SideMenu';
+import { logoutUser } from '../features/auth/authSlice';
 
-const drawerWidth = 240;
+const drawerWidth = 140;
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onLoginClick = () => {
-    // axios.get('/login').then((response) => {
-    //   console.log(response);
-    //   if (response.status === 200) {
-    //     navigate('/login');
-    //   }
-    // });
     navigate('/login');
     console.log('clicked');
   };
 
   const onRegisterClick = () => {
     navigate('/register');
+  };
+
+  const onLogoutClick = () => {
+    dispatch(logoutUser());
+    navigate('/');
   };
 
   return (
@@ -47,41 +39,48 @@ const Home: React.FC = () => {
           <AppToolbar
             onLoginClick={onLoginClick}
             onRegisterClick={onRegisterClick}
-            // sx={{ backgroundColor: 'primary.main' }}
+            onLogoutClick={onLogoutClick}
           />
         </AppBar>
-        <Drawer
-          variant="permanent"
+        <Toolbar />
+        <Box sx={{ overflow: 'auto' }}></Box>
+        <Box
+          component="main"
+          marginLeft={{
+            xs: 10,
+            sm: 10,
+            md: 10,
+            lg: 9,
+            xl: 0,
+            xxl: 0,
+          }}
           sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            [`& .MuiDrawer-paper`]: {
-              width: drawerWidth,
-              boxSizing: 'border-box',
-            },
+            flexGrow: 1,
+            bgcolor: 'background',
+            height: '100%',
+            width: '100%',
           }}
         >
           <Toolbar />
-          <Box sx={{ overflow: 'auto' }}>
-            <List>
-              {['Home', 'Profile', 'Settings', 'Logout'].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        </Drawer>
-        <Box
-          component="main"
-          sx={{ flexGrow: 1, bgcolor: 'background.', p: 3 }}
-          className="App App-glow"
-        >
-          <Toolbar />
-          <Container>
+          <SideMenu width={drawerWidth} />
+          <Container className="App App-glow">
             <Typography variant="h4" gutterBottom>
               Welcome to My Futuristic App
             </Typography>
+            <Typography variant="body1" bgcolor="background">
+              This is a sleek and welcoming interface designed with Material-UI.
+              Enjoy exploring the features of this futuristic application. This
+              is a sleek and welcoming interface designed with Material-UI.
+              Enjoy exploring the features of this futuristic application. This
+              is a sleek and welcoming interface designed with Material-UI.
+              Enjoy exploring the features of this futuristic application. This
+              is a sleek and welcoming interface designed with Material-UI.
+              Enjoy exploring the features of this futuristic application. This
+              is a sleek and welcoming interface designed with Material-UI.
+              Enjoy exploring the features of this futuristic application.
+            </Typography>
+          </Container>
+          <Container>
             <Typography variant="body1">
               This is a sleek and welcoming interface designed with Material-UI.
               Enjoy exploring the features of this futuristic application.
@@ -89,19 +88,10 @@ const Home: React.FC = () => {
           </Container>
         </Box>
       </Box>
-      {/* <Container>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Typography variant="h4" gutterBottom>
-              Welcome to My Futuristic App
-            </Typography>
-            <Typography variant="body1">
-              This is a sleek and welcoming interface designed with Material-UI.
-              Enjoy exploring the features of this futuristic application.
-            </Typography>
-          </Grid>
-        </Grid>
-      </Container> */}
+      <Dashboard>
+        <DashboardBox className="leftSection" />
+        <DashboardBox className="rightSection" />
+      </Dashboard>
     </>
   );
 };
