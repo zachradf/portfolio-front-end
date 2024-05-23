@@ -3,18 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
 import { RootState, AppDispatch } from '../app/store';
-import { loginUser } from '../features/auth/authSlice';
-import { registerUser } from '../features/auth/userSlice';
+import authSlice, { loginUser, registerUser } from '../features/auth/authSlice';
+// import { registerUser } from '../features/auth/authSlice';
 import drawAvatar from '../features/avatar';
 import { Buffer } from 'buffer';
 // Define the types for the form data
 interface FormData {
-  name?: string | null;
+  name?: string;
   username: string;
-  email?: string | null;
+  email?: string;
   password: string;
   nftProfilePicture: string;
-  //   confirmPassword: string;
 }
 
 const Registration: React.FC = () => {
