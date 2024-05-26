@@ -15,8 +15,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@mui/material';
-import { toggleHidden } from '../features/infoIcon/infoIconSlice';
-import { AppDispatch, RootState } from '../app/store';
+import { toggleHidden } from '../../features/infoIcon/infoIconSlice';
+import { AppDispatch, RootState } from '../../app/store';
 
 const HideInfoButton: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

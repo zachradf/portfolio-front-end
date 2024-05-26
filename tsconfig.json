@@ -16,10 +16,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "src/features/avatar.ts",
-    "../portfolio-backend/walletUtils.js"
-  ],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

@@ -4,6 +4,8 @@ interface User {
   email?: string;
   nftProfilePicture?: string;
   walletAddress?: string;
+  password?: string;
+  _id?: string;
 }
 
 export default User;

@@ -1,23 +1,34 @@
 import React from 'react';
-import { Tooltip, IconButton, Typography, Box } from '@mui/material';
+import { Tooltip, IconButton, Typography, Box, Link } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useSelector } from 'react-redux';
-import { RootState } from '../app/store';
+import { RootState } from '../../app/store';
 
 interface InfoIconProps {
   text: string;
+  class?: string;
+  style?: React.CSSProperties;
   code?: string;
+  link?: string;
 }
 
-const InfoIcon: React.FC<InfoIconProps> = ({ text, code }) => {
+const InfoIcon: React.FC<InfoIconProps> = ({ link, style, text, code }) => {
   const hidden = useSelector((state: RootState) => state.infoIcon.hidden);
   if (hidden) return null;
 
   return (
     <Tooltip
+      style={style}
       title={
         <Box sx={{ maxWidth: '600px' }}>
-          <Typography variant="body2">{text}</Typography>
+          <Typography variant="body2">
+            {text}
+            {link && (
+              <Link href={link} target="_blank" style={{ marginLeft: 5 }}>
+                Learn more
+              </Link>
+            )}
+          </Typography>
           {code && (
             <Box
               mt={2}

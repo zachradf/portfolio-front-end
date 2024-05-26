@@ -1,22 +1,30 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useDispatch as useReduxDispatch } from 'react-redux';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { Dispatch } from 'redux';
 
-import Home from '../components/Home';
-import Login from '../components/Login';
-import Registration from '../components/Registration';
+import Home from '../components/pages/Home';
+import Login from '../components/pages/Login';
+import Registration from '../components/pages/Registration';
+import { fetchSession } from '../features/auth/authSlice';
 import appTheme from '../themes/app-theme';
-import Profile from '../components/Profile';
+import Profile from '../components/pages/Profile';
 import PrivateRoute from './PrivateRoute';
-import HideInfoButton from '../components/HideInfoButton';
-
+import OAuth from '../components/pages/OAuth';
 import '../App.css';
 function App() {
+  const useDispatch = () => useReduxDispatch<Dispatch<any>>();
+  const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(fetchSession());
+  // }, [dispatch]);
+
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
-      {/* <HideInfoButton /> */}
       <Router>
         <Routes>
           <Route path="/login" Component={Login} />
@@ -30,6 +38,7 @@ function App() {
             }
           />
           <Route path="/" Component={Home} />
+          <Route path="api/github" Component={OAuth} />
         </Routes>
       </Router>
     </ThemeProvider>

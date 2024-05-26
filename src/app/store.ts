@@ -2,11 +2,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
 import infoIconReducer from '../features/infoIcon/infoIconSlice';
+// import sessionReducer from '../features/session/sessionSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     infoIcon: infoIconReducer,
+    // session: sessionReducer,
   },
 });
 

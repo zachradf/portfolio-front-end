@@ -2,11 +2,14 @@ import React, { useEffect } from 'react';
 import { Toolbar, Typography, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { useDispatch as useReduxDispatch } from 'react-redux';
+import { Dispatch } from 'redux';
 
-import { RootState } from '../app/store';
-import HideInfoButton from './HideInfoButton';
-import InfoIcon from './InfoIcon';
-import logoSrc from '../logo.png';
+import { RootState } from '../../app/store';
+import HideInfoButton from '../info-button/HideInfoButton';
+import InfoIcon from '../info-button/InfoIcon';
+import logoSrc from '../../logo.png';
 
 const AppToolbar = ({
   onLoginClick = () => {},
@@ -19,13 +22,23 @@ const AppToolbar = ({
   onLogoutClick?: () => void;
   // isAuthenticated?: boolean;
 }) => {
-  console.log(
-    'state',
-    useSelector((state: RootState) => state.auth.isAuthenticated)
-  );
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
+  console.log(
+    'AppToolbar' + isAuthenticated,
+    'isAuthenticated',
+    useSelector((state: RootState) => state.auth)
+  );
+  const useDispatch = () => useReduxDispatch<Dispatch<any>>();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // dispatch(fetchSession());
+    }
+  }, [dispatch, isAuthenticated]);
+
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -49,6 +62,20 @@ const AppToolbar = ({
   const handleLogoClick = () => {
     navigate('/');
     console.log('Logo clicked');
+  };
+
+  const handleGitHubOauth = async () => {
+    try {
+      const response = await axios.get('/api/auth/github/initiate');
+      console.log('resultUrl', response.data.url, response.data);
+      window.location.href = response.data.url;
+      // if (response.data.navigateTo) {
+      //   navigate(response.data.navigateTo);
+      // }
+      console.log('GitHub OAuth initiated', response.data.url);
+    } catch (error) {
+      console.error('Failed to initiate GitHub OAuth:', error);
+    }
   };
 
   return (
@@ -111,91 +138,15 @@ export default InfoIcon;`}
           </Button>
         </>
       ) : (
-        <Button onClick={handleLogoutClick} color="inherit">
-          Logout
-        </Button>
+        <>
+          <Button onClick={handleGitHubOauth}>GitHub Oauth</Button>
+          <Button onClick={handleLogoutClick} color="inherit">
+            Logout
+          </Button>
+        </>
       )}
     </Toolbar>
   );
 };
 
 export default AppToolbar;
-// import React, { useEffect } from 'react';
-// import { Toolbar, Typography, Button, Box } from '@mui/material';
-// import { useNavigate } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
-// import { RootState } from '../app/store';
-// import HideInfoButton from './HideInfoButton';
-// import InfoIcon from './InfoIcon';
-// import logoSrc from '../logo.png';
-
-// const AppToolbar: React.FC<{
-//   onLoginClick?: () => void;
-//   onRegisterClick?: () => void;
-//   onLogoutClick?: () => void;
-// }> = ({
-//   onLoginClick = () => {},
-//   onRegisterClick = () => {},
-//   onLogoutClick = () => {},
-// }) => {
-//   const isAuthenticated = useSelector(
-//     (state: RootState) => state.auth.isAuthenticated
-//   );
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     console.log('AppToolbar rendered');
-//   }, [isAuthenticated]);
-
-//   const handleLoginClick = () => {
-//     onLoginClick();
-//     navigate('/login');
-//     console.log('Login clicked');
-//   };
-
-//   const handleRegisterClick = () => {
-//     onRegisterClick();
-//     navigate('/register');
-//     console.log('Register clicked');
-//   };
-
-//   const handleLogoutClick = () => {
-//     onLogoutClick();
-//     navigate('/');
-//     console.log('Logout clicked');
-//   };
-
-//   return (
-//     <Toolbar>
-//       <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-//         <Box
-//           component="img"
-//           src={logoSrc}
-//           alt="Logo"
-//           sx={{ height: 40, mr: 2 }}
-//         />
-//         <Typography variant="h6" component="div">
-//           Your App Name
-//         </Typography>
-//       </Box>
-//       {isAuthenticated ? (
-//         <Button color="inherit" onClick={handleLogoutClick}>
-//           Logout
-//         </Button>
-//       ) : (
-//         <>
-//           <Button color="inherit" onClick={handleLoginClick}>
-//             Login
-//           </Button>
-//           <Button color="inherit" onClick={handleRegisterClick}>
-//             Register
-//           </Button>
-//         </>
-//       )}
-//       <HideInfoButton />
-//       <InfoIcon text="Some info text" />
-//     </Toolbar>
-//   );
-// };
-
-// export default AppToolbar;

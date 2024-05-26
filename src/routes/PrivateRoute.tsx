@@ -4,9 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 

@@ -25,19 +25,6 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .App-glow {
   position: relative;
 }
@@ -63,10 +50,10 @@
     opacity: 0.35;
   }
 }
-
+/* 
 @media (max-width: 735px) {
   .App-glow:before {
     animation: none;
     background: none;
   }
-}
+} */

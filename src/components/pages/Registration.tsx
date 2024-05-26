@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
-import { RootState, AppDispatch } from '../app/store';
-import authSlice, { loginUser, registerUser } from '../features/auth/authSlice';
+import { RootState, AppDispatch } from '../../app/store';
+import { authenticateUser } from '../../features/auth/authSlice';
+import { registerUser } from '../../features/auth/authSlice';
 // import { registerUser } from '../features/auth/authSlice';
-import drawAvatar from '../features/avatar';
-import { Buffer } from 'buffer';
+import drawAvatar from '../../features/avatar';
+// import { Buffer } from 'buffer';
 // Define the types for the form data
 interface FormData {
   name?: string;
@@ -62,9 +63,12 @@ const Registration: React.FC = () => {
       //   console.log('success', resultAction.payload);
       //   navigate(`/profile/${resultAction.payload.username}`);
       const resultAction = await dispatch(
-        loginUser({ username: formData.username, password: formData.password })
+        authenticateUser({
+          username: formData.username,
+          password: formData.password,
+        })
       );
-      if (loginUser.fulfilled.match(resultAction)) {
+      if (authenticateUser.fulfilled.match(resultAction)) {
         console.log('success', resultAction.payload);
         // navigate(`/profile/${resultAction.payload.username}`);
 

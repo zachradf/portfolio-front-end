@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, List, ListItem, ListItemText, Drawer } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../app/store';
+import { RootState } from '../../app/store';
 
 interface SideMenuProps {
   width: number;
@@ -35,7 +35,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ width, children }) => {
             { text: 'Home', path: '/' },
             { text: 'Profile', path: `/profile/${username}` },
             { text: 'Settings', path: '/settings' },
-            { text: 'Logout', path: '/logout' },
+            // { text: 'Logout', path: '/logout' },
           ].map((item) => (
             <ListItem button component={Link} to={item.path} key={item.text}>
               <ListItemText primary={item.text} />

@@ -1,86 +1,5 @@
-// import axios from 'axios';
-// import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-// import User from '../../interfaces/user.interface';
-// import AuthState from '../../interfaces/authstate.interface';
-
-// const initialState: AuthState = {
-//   user: null,
-//   isAuthenticated: false,
-//   status: 'idle',
-//   error: null,
-// };
-
-// // Define async thunk for login
-// export const loginUser = createAsyncThunk(
-//   'auth/login',
-//   async (
-//     credentials: {
-//       username: string;
-//       password: string;
-//       confirmPassword?: string;
-//       email?: string;
-//       name?: string;
-//       walletAddress?: string;
-//       nftProfilePicture?: string;
-//     },
-//     { rejectWithValue }
-//   ) => {
-//     try {
-//       const response = await axios.post('/api/login', credentials);
-//       const { token, user } = response.data;
-//       // Store the token in local storage
-//       localStorage.setItem('jwt', token);
-//       return user;
-//     } catch (error: any) {
-//       if (!error.response) {
-//         throw error;
-//       }
-//       return rejectWithValue(error.response.data);
-//     }
-//   }
-// );
-
-// // Create the auth slice
-// const authSlice = createSlice({
-//   name: 'auth',
-//   initialState,
-//   reducers: {
-//     logoutUser: (state) => {
-//       state.user = null;
-//       state.isAuthenticated = false;
-//       state.status = 'idle';
-//       state.error = null;
-//       // Remove the token from local storage
-//       localStorage.removeItem('jwt');
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(loginUser.pending, (state) => {
-//         console.log('Pending');
-//         state.status = 'loading';
-//       })
-//       .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
-//         console.log('Fulfilled');
-//         state.status = 'succeeded';
-//         state.user = action.payload;
-//         state.isAuthenticated = true;
-//         state.error = null;
-//       })
-//       .addCase(loginUser.rejected, (state, action: any) => {
-//         console.log('Rejected');
-//         state.status = 'failed';
-//         state.error = action.payload
-//           ? action.payload.message
-//           : action.error.message;
-//       });
-//   },
-// });
-
-// export const { logoutUser } = authSlice.actions;
-// export default authSlice.reducer;
-import axios from 'axios';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import axios from 'axios';
 import User from '../../interfaces/user.interface';
 import AuthState from '../../interfaces/authstate.interface';
 
@@ -100,7 +19,6 @@ interface Credentials {
   walletAddress?: string;
   nftProfilePicture?: string;
 }
-
 // Async thunk for registering a user
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
@@ -117,20 +35,84 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// Async thunk for user login
-export const loginUser = createAsyncThunk(
-  'auth/login',
-  async (credentials: Credentials, { rejectWithValue }) => {
+export const fetchSession = createAsyncThunk(
+  'session/fetchSession',
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/api/login', credentials);
-      const { token, user } = response.data;
-      localStorage.setItem('jwt', token); // Store the token in local storage
-      return user;
-    } catch (error: any) {
-      if (!error.response) {
-        throw error;
+      console.log('fetchSession begining');
+
+      const response = await axios.get('/api/auth/check-session');
+      console.log('response.data fetchSession dfgdfg', response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue('Failed to fetch session');
+    }
+  }
+);
+
+export const authenticateUser = createAsyncThunk(
+  'auth/authenticate',
+  async (
+    credentials: {
+      username: string;
+      password: string;
+      isAuthenticated?: boolean;
+      user?: User;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      if (
+        credentials.isAuthenticated &&
+        credentials.user !== null &&
+        credentials.user !== undefined &&
+        credentials.user._id !== null &&
+        credentials.user._id !== undefined
+      ) {
+        const response = await axios.get('/api/auth/check-session');
+        console.log('response.data fetchSession aaaaaa', response);
+        localStorage.setItem('jwt', response.data.token);
+        return response.data.user;
       }
+      console.log('credentials', credentials);
+      const response = await axios.post('/api/auth/login', credentials);
+      localStorage.setItem('jwt', response.data.token);
+      return response.data.user;
+    } catch (error: any) {
+      localStorage.removeItem('jwt');
       return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const checkSession = createAsyncThunk(
+  'auth/checkSession',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get('/api/auth/check-session');
+      return response.data.user;
+    } catch (error) {
+      return rejectWithValue('Failed to fetch session');
+    }
+  }
+);
+export const logoutUser = createAsyncThunk(
+  'auth/logoutUser',
+  async (_, { rejectWithValue }) => {
+    try {
+      // Calling the backend endpoint to clear the session
+      const response = await axios.post('/api/auth/logout');
+      if (response.status === 200) {
+        localStorage.removeItem('jwt');
+        console.log('response.data logoutUser', response);
+        return; // Return nothing, just signal success
+      } else {
+        return rejectWithValue('Failed to logout');
+      }
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response ? error.response.data : 'Unknown error'
+      );
     }
   }
 );
@@ -139,16 +121,29 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logoutUser: (state) => {
+    setAuth: (state, action: PayloadAction<User | null>) => {
+      console.log('setAuth action.payload', action.payload);
+      state.user = action.payload;
+      state.isAuthenticated = !!action.payload; // Automatically set isAuthenticated based on if user is null or not
+      state.error = null; // Clear any previous error when setting a user
+    },
+    clearSession: (state: any) => {
       state.user = null;
       state.isAuthenticated = false;
-      state.status = 'idle';
-      state.error = null;
-      localStorage.removeItem('jwt'); // Remove the token from local storage
     },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(logoutUser.fulfilled, (state) => {
+        console.log('logoutUser.fulfilled');
+        state.user = null;
+        state.isAuthenticated = false;
+        state.status = 'idle';
+        state.error = null;
+      })
+      .addCase(logoutUser.rejected, (state: any, action) => {
+        state.error = action.payload;
+      })
       .addCase(registerUser.pending, (state) => {
         state.status = 'loading';
       })
@@ -163,23 +158,34 @@ const authSlice = createSlice({
           ? action.payload.message
           : action.error.message;
       })
-      .addCase(loginUser.pending, (state) => {
+      .addCase(authenticateUser.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(loginUser.fulfilled, (state, action: any) => {
-        state.status = 'succeeded';
-        state.user = action.payload;
-        state.isAuthenticated = true;
-      })
-      .addCase(loginUser.rejected, (state, action: any) => {
+      .addCase(
+        authenticateUser.fulfilled,
+        (state, action: PayloadAction<User>) => {
+          state.user = action.payload;
+          state.isAuthenticated = true;
+          state.status = 'succeeded';
+        }
+      )
+      .addCase(authenticateUser.rejected, (state: any, action) => {
+        state.error = action.payload;
         state.status = 'failed';
-        state.error = action.payload
-          ? action.payload.message
-          : action.error.message;
+        state.isAuthenticated = false;
+      })
+      .addCase(checkSession.fulfilled, (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+        // state.isAuthenticated = true;
+        state.status = 'succeeded';
+      })
+      .addCase(checkSession.rejected, (state: any, action) => {
+        state.error = action.error.message;
+        state.isAuthenticated = false;
+        state.status = 'failed';
       });
   },
 });
-
-export const { logoutUser } = authSlice.actions;
+export const { setAuth } = authSlice.actions;
 
 export default authSlice.reducer;
