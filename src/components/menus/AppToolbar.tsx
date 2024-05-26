@@ -10,18 +10,9 @@ import { RootState } from '../../app/store';
 import HideInfoButton from '../info-button/HideInfoButton';
 import InfoIcon from '../info-button/InfoIcon';
 import logoSrc from '../../logo.png';
+import { logoutUser } from '../../features/auth/authSlice';
 
-const AppToolbar = ({
-  onLoginClick = () => {},
-  onRegisterClick = () => {},
-  onLogoutClick = () => {},
-  // isAuthenticated = false,
-}: {
-  onLoginClick?: () => void;
-  onRegisterClick?: () => void;
-  onLogoutClick?: () => void;
-  // isAuthenticated?: boolean;
-}) => {
+const AppToolbar = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
@@ -33,45 +24,34 @@ const AppToolbar = ({
   const useDispatch = () => useReduxDispatch<Dispatch<any>>();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      // dispatch(fetchSession());
-    }
-  }, [dispatch, isAuthenticated]);
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     // dispatch(fetchSession());
+  //   }
+  // }, [dispatch, isAuthenticated]);
 
   const navigate = useNavigate();
-
-  const handleLoginClick = () => {
-    onLoginClick();
+  const onLoginClick = () => {
     navigate('/login');
-    console.log('Login clicked');
   };
 
-  const handleRegisterClick = () => {
-    onRegisterClick();
+  const onRegisterClick = () => {
     navigate('/register');
-    console.log('Register clicked');
   };
 
-  const handleLogoutClick = () => {
-    onLogoutClick();
+  const onLogoutClick = () => {
+    dispatch(logoutUser());
     navigate('/');
-    console.log('Logout clicked');
   };
 
-  const handleLogoClick = () => {
+  const onLogoClick = () => {
     navigate('/');
-    console.log('Logo clicked');
   };
 
-  const handleGitHubOauth = async () => {
+  const onGitHubOauthClick = async () => {
     try {
       const response = await axios.get('/api/auth/github/initiate');
-      console.log('resultUrl', response.data.url, response.data);
       window.location.href = response.data.url;
-      // if (response.data.navigateTo) {
-      //   navigate(response.data.navigateTo);
-      // }
       console.log('GitHub OAuth initiated', response.data.url);
     } catch (error) {
       console.error('Failed to initiate GitHub OAuth:', error);
@@ -85,14 +65,14 @@ const AppToolbar = ({
         src={logoSrc}
         alt={'Zachary Radford'}
         sx={{ height: 40, mr: 1 }}
-        onClick={handleLogoClick}
+        onClick={onLogoClick}
       />
       <Typography
         variant="h6"
         noWrap
         component="div"
         sx={{ flexGrow: 1, mb: 0.5 }}
-        onClick={handleLogoClick}
+        onClick={onLogoClick}
       >
         My Futuristic App
         <InfoIcon
@@ -130,17 +110,17 @@ export default InfoIcon;`}
       <HideInfoButton />
       {!isAuthenticated ? (
         <>
-          <Button onClick={handleLoginClick} color="inherit">
+          <Button onClick={onLoginClick} color="inherit">
             Login
           </Button>
-          <Button onClick={handleRegisterClick} color="inherit">
+          <Button onClick={onRegisterClick} color="inherit">
             Register
           </Button>
         </>
       ) : (
         <>
-          <Button onClick={handleGitHubOauth}>GitHub Oauth</Button>
-          <Button onClick={handleLogoutClick} color="inherit">
+          <Button onClick={onGitHubOauthClick}>GitHub Oauth</Button>
+          <Button onClick={onLogoutClick} color="inherit">
             Logout
           </Button>
         </>

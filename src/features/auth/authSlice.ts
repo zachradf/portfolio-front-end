@@ -39,10 +39,7 @@ export const fetchSession = createAsyncThunk(
   'session/fetchSession',
   async (_, { rejectWithValue }) => {
     try {
-      console.log('fetchSession begining');
-
       const response = await axios.get('/api/auth/check-session');
-      console.log('response.data fetchSession dfgdfg', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch session');
@@ -70,11 +67,9 @@ export const authenticateUser = createAsyncThunk(
         credentials.user._id !== undefined
       ) {
         const response = await axios.get('/api/auth/check-session');
-        console.log('response.data fetchSession aaaaaa', response);
         localStorage.setItem('jwt', response.data.token);
         return response.data.user;
       }
-      console.log('credentials', credentials);
       const response = await axios.post('/api/auth/login', credentials);
       localStorage.setItem('jwt', response.data.token);
       return response.data.user;
@@ -104,7 +99,6 @@ export const logoutUser = createAsyncThunk(
       const response = await axios.post('/api/auth/logout');
       if (response.status === 200) {
         localStorage.removeItem('jwt');
-        console.log('response.data logoutUser', response);
         return; // Return nothing, just signal success
       } else {
         return rejectWithValue('Failed to logout');
@@ -122,7 +116,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setAuth: (state, action: PayloadAction<User | null>) => {
-      console.log('setAuth action.payload', action.payload);
       state.user = action.payload;
       state.isAuthenticated = !!action.payload; // Automatically set isAuthenticated based on if user is null or not
       state.error = null; // Clear any previous error when setting a user

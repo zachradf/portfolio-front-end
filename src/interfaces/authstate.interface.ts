@@ -4,7 +4,7 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
+  error: null | { msg: string };
 }
 
 export default AuthState;

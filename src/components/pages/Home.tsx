@@ -1,75 +1,42 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   TypedUseSelectorHook,
   useDispatch as reduxUseDispatch,
   useSelector as reduxUseSelector,
 } from 'react-redux';
 import { Box, Container, Typography, AppBar, Toolbar } from '@mui/material';
-import { AppDispatch } from '../../app/store'; // Import your store's types
 
 import AppToolbar from '../menus/AppToolbar';
 import Dashboard from '../dashboard/Dashboard';
 import DashboardBox from '../dashboard/DashboardBox';
 import SideMenu from '../menus/SideMenu';
-import clearSession, {
-  authenticateUser,
-  fetchSession,
-  logoutUser,
-  // setSession,
-} from '../../features/auth/authSlice';
-import AuthState from '../../interfaces/authstate.interface';
-// import { Dispatch } from 'redux';
+import { authenticateUser, fetchSession } from '../../features/auth/authSlice';
 import { RootState } from '../../app/store';
-// import { setSession, fetchSession } from '../../features/session/sessionSlice';
-const drawerWidth = 140;
 
+const drawerWidth = 140;
 const Home: React.FC = () => {
-  // const useDispatch = () => useReduxDispatch<Dispatch<any>>();
   const useDispatch = () => reduxUseDispatch<any>();
   const useSelector: TypedUseSelectorHook<RootState> = reduxUseSelector;
-  const navigate = useNavigate();
   const dispatch = useDispatch(); // Now correctly typed for your app
-
-  // const session = useSelector((state: RootState) => state.auth);
   const state = useSelector((state: RootState) => state.auth);
-  // const [user, setUser] = React.useState<any>(state.user);
   const { isAuthenticated, error, status } = state;
-  console.log('Home', state.user, isAuthenticated, error);
+
   useEffect(() => {
     const initSession = async () => {
       if (status === 'idle' || !isAuthenticated) {
         try {
           const action = await dispatch(fetchSession());
-          if (fetchSession.fulfilled.match(action)) {
-            console.log('action', action);
+          if (fetchSession.fulfilled.match(action) && action.payload.user) {
             dispatch(authenticateUser(action.payload));
           }
-          console.log('action', action);
         } catch (error) {
           console.error('Error fetching session:', error);
-          // navigate('/login'); // Redirect to login if the session is not active
         }
       }
     };
 
     initSession();
   }, []);
-
-  const onLoginClick = () => {
-    navigate('/login');
-    console.log('clicked');
-  };
-
-  const onRegisterClick = () => {
-    navigate('/register');
-  };
-
-  const onLogoutClick = () => {
-    dispatch(logoutUser());
-    // dispatch(clearSession());
-    navigate('/');
-  };
 
   return (
     <>
@@ -78,11 +45,7 @@ const Home: React.FC = () => {
           position="fixed"
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
         >
-          <AppToolbar
-            onLoginClick={onLoginClick}
-            onRegisterClick={onRegisterClick}
-            onLogoutClick={onLogoutClick}
-          />
+          <AppToolbar />
         </AppBar>
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}></Box>

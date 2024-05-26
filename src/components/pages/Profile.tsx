@@ -8,6 +8,7 @@ import {
   Avatar,
 } from '@mui/material';
 import { useSelector, useDispatch as useReduxDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../app/store';
 import AppToolbar from '../menus/AppToolbar';
 import profileStyles from '../../themes/profile-styles';
@@ -21,25 +22,31 @@ const Profile: React.FC = () => {
   const [walletBalance, setWalletBalance] = useState('0');
   const classes = profileStyles();
   const useDispatch = () => useReduxDispatch<Dispatch<any>>();
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log('Profile', user);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+
   useEffect(() => {
+    if (!user || !isAuthenticated) {
+      navigate('/error', {
+        state: {
+          errorMessage: 'User not authenticated. Redirecting to login page.',
+        },
+      });
+    }
     if (user && user.walletAddress) {
       getBalance(user, setWalletBalance);
     } else {
-      console.log('User or user wallet address not available');
+      console.error('User or user wallet address not available');
     }
   }, [user, walletBalance]); // Depend on `user` to re-run this effect when `user` changes
 
-  // const dispatch = useDispatch();
-  const handleLogout = () => {
-    dispatch(logoutUser());
-  };
   return (
     <>
       <AppBar position="static">
-        <AppToolbar onLogoutClick={handleLogout} />
+        <AppToolbar />
       </AppBar>
       <Box className={classes.root}>
         <div>

@@ -10,7 +10,6 @@ interface SideMenuProps {
 }
 
 const SideMenu: React.FC<SideMenuProps> = ({ width, children }) => {
-  // const classes = useStyles({ width });
   const username = useSelector(
     (state: RootState) => state.auth.user?.username || null
   );

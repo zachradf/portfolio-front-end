@@ -2,8 +2,9 @@ import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
-import { authenticateUser, logoutUser } from '../../features/auth/authSlice';
-import setSession from '../../features/auth/authSlice';
+import CloseIcon from '@mui/icons-material/Close';
+
+import { authenticateUser } from '../../features/auth/authSlice';
 import { RootState, AppDispatch } from '../../app/store';
 import {
   Box,
@@ -12,6 +13,7 @@ import {
   Button,
   Typography,
   CircularProgress,
+  IconButton,
 } from '@mui/material';
 import appTheme from '../../themes/app-theme';
 
@@ -38,22 +40,15 @@ const LoginComponent: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const resultAction = await dispatch(authenticateUser(credentials));
-    console.log('resultAction', resultAction);
     if (authenticateUser.fulfilled.match(resultAction)) {
-      console.log('success', resultAction);
-      // dispatch(setSession(resultAction.payload));
       navigate(`/profile/${resultAction.payload.username}`);
     } else {
-      console.log(
+      console.error(
         'Failed to login, check credentials',
         resultAction.error.message
       );
     }
   };
-
-  // const handleLogout = () => {
-  //   dispatch(logoutUser());
-  // };
 
   useEffect(() => {
     if (status === 'succeeded') {
@@ -63,12 +58,6 @@ const LoginComponent: React.FC = () => {
 
   return (
     <div>
-      {/* {auth.isAuthenticated ? (
-        <div>
-          <h1>Welcome, {auth.user?.name}</h1>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      ) : ( */}
       <Container maxWidth="sm">
         <Box
           sx={{
@@ -78,9 +67,23 @@ const LoginComponent: React.FC = () => {
             alignItems: 'center',
           }}
         >
-          <Typography component="h1" variant="h5">
-            Login
-          </Typography>
+          <Box
+            sx={{
+              width: '85%',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Typography component="h1" variant="h5">
+              Login
+            </Typography>
+            <IconButton
+              onClick={() => navigate('/')}
+              sx={{ marginLeft: 'auto' }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <TextField
               variant="outlined"
@@ -132,10 +135,11 @@ const LoginComponent: React.FC = () => {
               </div>
             </ThemeProvider>
           )}
-          {status === 'failed' && <Typography>Error during login</Typography>}
+          {status === 'failed' && (
+            <Typography>Error during login: {error?.msg}</Typography>
+          )}{' '}
         </Box>
       </Container>
-      {/* )} */}
     </div>
   );
 };

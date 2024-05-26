@@ -13,6 +13,7 @@ import appTheme from '../themes/app-theme';
 import Profile from '../components/pages/Profile';
 import PrivateRoute from './PrivateRoute';
 import OAuth from '../components/pages/OAuth';
+import Error from '../components/pages/Error';
 import '../App.css';
 function App() {
   const useDispatch = () => useReduxDispatch<Dispatch<any>>();
@@ -39,6 +40,7 @@ function App() {
           />
           <Route path="/" Component={Home} />
           <Route path="api/github" Component={OAuth} />
+          <Route path="/error" Component={Error} />
         </Routes>
       </Router>
     </ThemeProvider>

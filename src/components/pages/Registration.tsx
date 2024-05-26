@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  IconButton,
+} from '@mui/material';
 import { RootState, AppDispatch } from '../../app/store';
 import { authenticateUser } from '../../features/auth/authSlice';
 import { registerUser } from '../../features/auth/authSlice';
-// import { registerUser } from '../features/auth/authSlice';
 import drawAvatar from '../../features/avatar';
-// import { Buffer } from 'buffer';
-// Define the types for the form data
+
 interface FormData {
   name?: string;
   username: string;
@@ -24,7 +30,6 @@ const Registration: React.FC = () => {
     email: '',
     password: '',
     nftProfilePicture: '',
-    // confirmPassword: '',
   });
   const state = useSelector((state: RootState) => state);
   const navigate = useNavigate();
@@ -38,40 +43,26 @@ const Registration: React.FC = () => {
   function canvasToDataURL(canvas: HTMLCanvasElement): string {
     return canvas.toDataURL('image/png');
   }
-  console.log('status', status, state);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const nftProfilePicture = await drawAvatar(formData.username);
     const dataUrlNftProfilePicture = canvasToDataURL(nftProfilePicture);
-    // const bufferNftProfilePicture = dataURLToBuffer(dataUrlNftProfilePicture);
-    // console.log(
-    //   'nftProfilePicture',
-    //   nftProfilePicture,
-    //   dataUrlNftProfilePicture.toString(),
-    //   typeof dataUrlNftProfilePicture.toString(),
-    //   typeof dataUrlNftProfilePicture
-    //   //   bufferNftProfilePicture
-    // );
-    // Update the form data directly
     const updatedFormData: FormData = {
       ...formData,
       nftProfilePicture: dataUrlNftProfilePicture,
     };
-    console.log('formData', formData);
+
     const resultAction = await dispatch(registerUser(updatedFormData));
     if (registerUser.fulfilled.match(resultAction)) {
-      //   console.log('success', resultAction.payload);
-      //   navigate(`/profile/${resultAction.payload.username}`);
       const resultAction = await dispatch(
         authenticateUser({
           username: formData.username,
           password: formData.password,
         })
       );
+
       if (authenticateUser.fulfilled.match(resultAction)) {
         console.log('success', resultAction.payload);
-        // navigate(`/profile/${resultAction.payload.username}`);
-
         navigate(`/profile/${resultAction.payload.username}`);
       }
     }
@@ -87,9 +78,20 @@ const Registration: React.FC = () => {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5">
-          Register
-        </Typography>
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            Register
+          </Typography>
+          <IconButton onClick={() => navigate('/')} sx={{ marginLeft: 'auto' }}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <TextField
             variant="outlined"

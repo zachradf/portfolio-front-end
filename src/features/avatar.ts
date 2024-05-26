@@ -1,5 +1,3 @@
-import { createHash } from 'crypto-browserify';
-
 async function generateHash(username: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(username);
@@ -11,20 +9,8 @@ async function generateHash(username: string): Promise<string> {
   return hashHex;
 }
 
-// Example usage
-generateHash('Felix').then((hash) => console.log('Generated Hash:', hash));
-
 function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomHexColor(): string {
-  const randomColor = Math.floor(Math.random() * 0xffffff);
-  return `#${randomColor.toString(16).padStart(6, '0')}`;
-}
-
-function getRandomItem<T>(arr: T[], hashSegment: number): T {
-  return arr[hashSegment % arr.length];
 }
 
 async function drawAvatar(username: string): Promise<HTMLCanvasElement> {
@@ -90,8 +76,4 @@ async function drawAvatar(username: string): Promise<HTMLCanvasElement> {
   return canvas;
 }
 
-// Example usage
-// const username = 'Felix';
-// const avatarCanvas = drawAvatar(username);
-// document.body.appendChild(avatarCanvas);
 export default drawAvatar;
