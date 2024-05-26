@@ -36,29 +36,6 @@ const Home: React.FC = () => {
   // const [user, setUser] = React.useState<any>(state.user);
   const { isAuthenticated, error, status } = state;
   console.log('Home', state.user, isAuthenticated, error);
-  // useEffect(() => {
-  //   const initSession = async () => {
-  //     try {
-  //       // if (isAuthenticated) {
-  //       console.log('initSession', isAuthenticated);
-  //       const resultAction = await dispatch(fetchSession());
-  //       console.log('resultAction', resultAction);
-  //       if (fetchSession.fulfilled.match(resultAction)) {
-  //         // Use the payload directly from the action result
-  //         // dispatch(setSession(resultAction.payload));
-  //       } else {
-  //         throw new Error('Session fetch failed');
-  //       }
-  //       // }
-  //     } catch (error) {
-  //       console.error('Error fetching session:', error);
-  //     }
-  //   };
-
-  //   // if (!isAuthenticated && !error) {
-  //   initSession();
-  //   // }
-  // }, []);
   useEffect(() => {
     const initSession = async () => {
       if (status === 'idle' || !isAuthenticated) {
@@ -66,22 +43,9 @@ const Home: React.FC = () => {
           const action = await dispatch(fetchSession());
           if (fetchSession.fulfilled.match(action)) {
             console.log('action', action);
-            const authState: AuthState = {
-              isAuthenticated: true,
-              user: action.payload,
-              error: null,
-              status: 'idle',
-            };
             dispatch(authenticateUser(action.payload));
           }
           console.log('action', action);
-          // const resultAction = await dispatch(authenticateUser(action.payload));
-          // console.log('resultAction', resultAction);
-          // if (authenticateUser.fulfilled.match(resultAction)) {
-          //   console.log('success', resultAction);
-          // dispatch(setSession(resultAction.payload));
-          // navigate(`/profile/${resultAction.payload.username}`);
-          // }
         } catch (error) {
           console.error('Error fetching session:', error);
           // navigate('/login'); // Redirect to login if the session is not active
@@ -91,14 +55,6 @@ const Home: React.FC = () => {
 
     initSession();
   }, []);
-  // dispatch, isAuthenticated, error
-  // useEffect(() => {
-  //   // if (!isAuthenticated && !error) {
-  //   const state = dispatch(fetchSession());
-  //   console.log('Home', state);
-  //   dispatch(setSession(state));
-  //   // }
-  // }, [dispatch, isAuthenticated, error]);
 
   const onLoginClick = () => {
     navigate('/login');

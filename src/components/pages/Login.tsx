@@ -1,10 +1,19 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { ThemeProvider } from '@emotion/react';
 import { authenticateUser, logoutUser } from '../../features/auth/authSlice';
 import setSession from '../../features/auth/authSlice';
 import { RootState, AppDispatch } from '../../app/store';
-import { Box, Container, TextField, Button, Typography } from '@mui/material';
+import {
+  Box,
+  Container,
+  TextField,
+  Button,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
+import appTheme from '../../themes/app-theme';
 
 const LoginComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -16,7 +25,7 @@ const LoginComponent: React.FC = () => {
   });
 
   // Use this status variable to get the updated status
-  const status = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const status = useSelector((state: RootState) => state.auth.status);
   const error = useSelector((state: RootState) => state.auth.error);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +56,7 @@ const LoginComponent: React.FC = () => {
   // };
 
   useEffect(() => {
-    if (status === true) {
+    if (status === 'succeeded') {
       navigate(`/profile/${auth.user?.username}`);
     }
   }, [status, navigate, auth.user]);
@@ -109,8 +118,21 @@ const LoginComponent: React.FC = () => {
               Login
             </Button>
           </Box>
-          {status === true && <Typography>Loading...</Typography>}
-          {status === false && <Typography>Error during login</Typography>}
+          {status === 'loading' && (
+            <ThemeProvider theme={appTheme}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  // height: '100vh',
+                }}
+              >
+                <CircularProgress color="primary" />
+              </div>
+            </ThemeProvider>
+          )}
+          {status === 'failed' && <Typography>Error during login</Typography>}
         </Box>
       </Container>
       {/* )} */}

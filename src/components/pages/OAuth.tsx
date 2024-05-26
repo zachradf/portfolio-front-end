@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { CircularProgress, ThemeProvider } from '@mui/material';
 import { useSelector } from 'react-redux';
 import User from '../../interfaces/user.interface';
+import appTheme from '../../themes/app-theme';
 const OAuthPage = () => {
   const user = useSelector((state: any) => state.auth.user);
   const navigate = useNavigate();
@@ -35,7 +37,18 @@ const OAuthPage = () => {
   };
 
   return (
-    <div>Loading...</div> // Optionally add a spinner or loading message here
+    <ThemeProvider theme={appTheme}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <CircularProgress color="primary" />
+      </div>
+    </ThemeProvider>
   );
 };
 
