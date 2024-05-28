@@ -12,6 +12,8 @@ import DashboardBox from '../dashboard/DashboardBox';
 import SideMenu from '../menus/SideMenu';
 import { authenticateUser, fetchSession } from '../../features/auth/authSlice';
 import { RootState } from '../../app/store';
+import FetchRepos from '../../features/utils/fetchGitHub';
+import GitHubViewer from '../content/GitHubViewer';
 
 const drawerWidth = 140;
 const Home: React.FC = () => {
@@ -26,6 +28,7 @@ const Home: React.FC = () => {
       if (status === 'idle' || !isAuthenticated) {
         try {
           const action = await dispatch(fetchSession());
+          //Basically a workaround to relogin the user after authentication
           if (fetchSession.fulfilled.match(action) && action.payload.user) {
             dispatch(authenticateUser(action.payload));
           }
@@ -68,7 +71,7 @@ const Home: React.FC = () => {
           }}
         >
           <Toolbar />
-          <SideMenu width={drawerWidth} />
+          {/* <SideMenu width={drawerWidth} /> */}
           <Container>
             <Typography variant="h4" gutterBottom>
               Welcome to My Futuristic App
@@ -95,8 +98,12 @@ const Home: React.FC = () => {
         </Box>
       </Box>
       <Dashboard>
-        <DashboardBox className="leftSection" />
-        <DashboardBox className="rightSection" />
+        {/* <DashboardBox> */}
+        <DashboardBox className="leftSection">
+          <GitHubViewer repoIdentifier="zachradf/testRepo" />
+        </DashboardBox>
+        {/* <FetchRepos /> */}
+        {/* <DashboardBox className="rightSection" /> */}
       </Dashboard>
     </>
   );

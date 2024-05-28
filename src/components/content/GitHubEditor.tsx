@@ -1,63 +1,149 @@
 import React, { useState } from 'react';
-import { Octokit } from '@octokit/rest';
 import ReactMarkdown from 'react-markdown';
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Link,
+} from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import GitHubIcon from '@mui/icons-material/GitHub'; // Make sure to install @mui/icons-material if not already installed
+import appTheme from '../../themes/app-theme';
+import pushGitHub from '../../features/utils/pushGitHub';
 
 const GitHubEditor = () => {
   const [markdown, setMarkdown] = useState('');
-  const [repo, setRepo] = useState('');
-  const [authToken, setAuthToken] = useState('');
-
-  const octokit = new Octokit({ auth: authToken });
+  const [fullRepo, setRepo] = useState('');
+  const [branch, setBranch] = useState('');
+  const [commit, setCommitMessage] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
 
   const saveContentToGitHub = async () => {
-    try {
-      // Here you might extract user/owner and repo name from `repo` string
-      // Example repo format could be "username/repository"
-      const [owner, repoName] = repo.split('/');
-      const path = 'path/to/file.md'; // Define how you want to store your file in the repo
-      const message = 'Update blog post';
-      const content = Buffer.from(markdown).toString('base64');
+    const [owner, repo] = fullRepo.split('/');
+    const path = 'README.md'; // You can make this dynamic
+    const message = commit;
+    const content = markdown;
+    pushGitHub({ owner, repo, path, message, content, branch });
+  };
 
-      const { data } = await octokit.repos.createOrUpdateFileContents({
-        owner,
-        repo: repoName,
-        path,
-        message,
-        content,
-        committer: {
-          name: `Your Name`,
-          email: `your-email@example.com`,
-        },
-        author: {
-          name: `Your Name`,
-          email: `your-email@example.com`,
-        },
-      });
-      alert('Content saved to GitHub!');
-    } catch (error) {
-      console.error('Failed to save content:', error);
-      alert('Failed to save content.');
-    }
+  const handleCreateRepository = async () => {
+    const [owner, repo] = fullRepo.split('/');
+    // const path = 'README.md'; // You can make this dynamic
+    const path = 'README.md'; // You can make this dynamic
+    const message = commit;
+    const content = markdown;
+
+    pushGitHub({ owner, repo, path, message, content, branch });
+    setOpenDialog(false);
+    // Implement repository creation logic here
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={repo}
-        onChange={(e) => setRepo(e.target.value)}
-        placeholder="Enter repo (username/repo)"
-      />
-      <textarea
-        value={markdown}
-        onChange={(e) => setMarkdown(e.target.value)}
-        placeholder="Write your markdown"
-      />
-      <button onClick={saveContentToGitHub}>Save to GitHub</button>
-      <div>
-        <ReactMarkdown>{markdown}</ReactMarkdown>
-      </div>
-    </div>
+    <ThemeProvider theme={appTheme}>
+      <Container maxWidth="sm">
+        <Box sx={{ my: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Typography variant="h4" gutterBottom>
+            GitHub Markdown Editor
+          </Typography>
+          <TextField
+            label="Branch"
+            variant="outlined"
+            fullWidth
+            value={branch}
+            onChange={(e) => setBranch(e.target.value)}
+            placeholder="Branch"
+          />
+          <TextField
+            label="Repository"
+            variant="outlined"
+            fullWidth
+            value={fullRepo}
+            onChange={(e) => setRepo(e.target.value)}
+            placeholder="Enter repo (username/repo)"
+          />
+          <TextField
+            label="Commit Message"
+            variant="outlined"
+            fullWidth
+            value={commit}
+            onChange={(e) => setCommitMessage(e.target.value)}
+          />
+          <TextField
+            label="Markdown Content"
+            variant="outlined"
+            multiline
+            rows={10}
+            fullWidth
+            value={markdown}
+            onChange={(e) => setMarkdown(e.target.value)}
+          />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 2,
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={saveContentToGitHub}
+            >
+              Save to GitHub
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => setOpenDialog(true)}
+            >
+              Create New Repository
+            </Button>
+            <Box sx={{ textAlign: 'center' }}>
+              <IconButton
+                aria-label="go to GitHub repository"
+                component={Link}
+                href={`https://github.com/${fullRepo}`}
+                target="_blank"
+                rel="noopener"
+              >
+                <GitHubIcon />
+              </IconButton>
+            </Box>
+          </Box>
+        </Box>
+        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+          <DialogTitle>Create New Repository</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Repository Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+            <Button onClick={handleCreateRepository}>Create</Button>
+          </DialogActions>
+        </Dialog>
+        <Box sx={{ bgcolor: 'background.paper', p: 2, mt: 2 }}>
+          <Typography variant="h6" gutterBottom component="div">
+            Markdown Preview
+          </Typography>
+          <ReactMarkdown>{markdown}</ReactMarkdown>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 };
 

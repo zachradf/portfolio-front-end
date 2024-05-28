@@ -15,14 +15,9 @@ import PrivateRoute from './PrivateRoute';
 import OAuth from '../components/pages/OAuth';
 import Error from '../components/pages/Error';
 import '../App.css';
+import GitHubEditor from '../components/content/GitHubEditor';
+import GitHubViewer from '../components/content/GitHubViewer';
 function App() {
-  const useDispatch = () => useReduxDispatch<Dispatch<any>>();
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(fetchSession());
-  // }, [dispatch]);
-
   return (
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
@@ -40,6 +35,7 @@ function App() {
           />
           <Route path="/" Component={Home} />
           <Route path="api/github" Component={OAuth} />
+          <Route path="/editor" Component={GitHubEditor} />
           <Route path="/error" Component={Error} />
         </Routes>
       </Router>

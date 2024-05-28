@@ -7,40 +7,39 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2),
     borderRadius: theme.shape.borderRadius,
     boxShadow: theme.shadows[3],
-    background: 'rgba(255, 255, 255, 0.8)',
+
+    background: 'rgba(74, 74, 74 0.8)',
+
+    // background: 'rgba(255, 255, 255, 0.8)',
     transition: 'transform 0.5s, background 0.5s',
   },
   leftSection: {
-    transform: 'skewX(-15deg)',
-    '&:hover': {
-      transform: 'skewX(0)',
-      background: 'rgba(255, 255, 255, 0.4)',
-    },
+    // transform: 'skewX(-15deg)',
+    // '&:hover': {
+    // transform: 'skewX(0)',
+    // background: 'rgba(255, 255, 255, 0.4)',
+    // },
   },
   rightSection: {
-    transform: 'skewX(15deg)',
-    '&:hover': {
-      transform: 'skewX(0)',
-      background: 'rgba(255, 255, 255, 0.4)',
-    },
+    // transform: 'skewX(15deg)',
+    // '&:hover': {
+    // transform: 'skewX(0)',
+    // background: 'rgba(255, 255, 255, 0.4)',
+    // },
   },
 }));
-
 type SectionClassNames = 'leftSection' | 'rightSection';
 
 interface DashboardBoxProps {
   className: SectionClassNames;
   children?: ReactNode;
 }
-
 const DashboardBox: React.FC<DashboardBoxProps> = ({ className, children }) => {
   const classes = useStyles();
 
   return (
     <Grid item xs={12} md={6}>
-      <Box className={`${classes.section} ${classes[className]}`}>
-        {children}
-      </Box>
+      <Box>{children}</Box>
     </Grid>
   );
 };

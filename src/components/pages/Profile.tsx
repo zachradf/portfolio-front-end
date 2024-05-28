@@ -15,8 +15,9 @@ import profileStyles from '../../themes/profile-styles';
 import { logoutUser } from '../../features/auth/authSlice';
 import InfoIcon from '../info-button/InfoIcon';
 import getBalance from '../../features/utils/wallet';
-import GitHubEditor from '../content/GitHubEditor';
+// import GitHubEditor from '../content/GitHubEditor';
 import { Dispatch } from 'redux';
+import GitHubViewer from '../content/GitHubViewer';
 
 const Profile: React.FC = () => {
   const [walletBalance, setWalletBalance] = useState('0');
@@ -79,12 +80,6 @@ async function drawAvatar(username: string): Promise<HTMLCanvasElement> {
             className={classes.avatar}
           />
         </div>
-        {/* <Avatar
-          //   alt="NFT Profile"
-          src={user?.nftProfilePicture}
-          alt={`${user?.username}'s avatar`}
-        /> */}
-        {/* {user?.nftProfilePicture} */}
         <Typography variant="h4" gutterBottom>
           {user?.username}
         </Typography>
@@ -98,7 +93,8 @@ async function drawAvatar(username: string): Promise<HTMLCanvasElement> {
               </Box>
               <Box className={`${classes.section} ${classes.leftSection}`}>
                 <Typography variant="h5">My Content</Typography>
-                <GitHubEditor />
+                {/* <GitHubEditor /> */}
+                {/* <GitHubViewer /> */}
               </Box>
             </Grid>
             <Grid item xs={12} md={6}>

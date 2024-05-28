@@ -2,15 +2,15 @@ import React, { ReactNode } from 'react';
 import { Container, Grid, Box } from '@material-ui/core';
 
 interface DashboardProps {
-  children: ReactNode;
+  children: any;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ children }) => {
   return (
     <Container className="dashboard">
-      <Grid container spacing={4}>
-        {children}
-      </Grid>
+      {/* <Grid container spacing={4}> */}
+      {children}
+      {/* </Grid> */}
     </Container>
   );
 };
