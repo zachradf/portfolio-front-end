@@ -23,7 +23,7 @@ const HideInfoButton: React.FC = () => {
   const hidden = useSelector((state: RootState) => state.infoIcon.hidden);
 
   return (
-    <Button onClick={() => dispatch(toggleHidden())}>
+    <Button onClick={() => dispatch(toggleHidden())} color="inherit">
       {hidden ? 'Show Info' : 'Hide Info'}
     </Button>
   );

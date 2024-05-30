@@ -16,21 +16,22 @@ import {
 import { ThemeProvider } from '@mui/material/styles';
 import GitHubIcon from '@mui/icons-material/GitHub'; // Make sure to install @mui/icons-material if not already installed
 import appTheme from '../../themes/app-theme';
-import pushGitHub from '../../features/utils/pushGitHub';
+import upsertFile from '../../features/utils/GitHub/upsertFile';
 
 const GitHubEditor = () => {
   const [markdown, setMarkdown] = useState('');
   const [fullRepo, setRepo] = useState('');
   const [branch, setBranch] = useState('');
+  const [path, setPath] = useState('');
   const [commit, setCommitMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
 
   const saveContentToGitHub = async () => {
     const [owner, repo] = fullRepo.split('/');
-    const path = 'README.md'; // You can make this dynamic
+    // const path = path; // You can make this dynamic
     const message = commit;
     const content = markdown;
-    pushGitHub({ owner, repo, path, message, content, branch });
+    upsertFile({ owner, repo, path, message, content, branch });
   };
 
   const handleCreateRepository = async () => {
@@ -40,7 +41,7 @@ const GitHubEditor = () => {
     const message = commit;
     const content = markdown;
 
-    pushGitHub({ owner, repo, path, message, content, branch });
+    upsertFile({ owner, repo, path, message, content, branch });
     setOpenDialog(false);
     // Implement repository creation logic here
   };
@@ -59,6 +60,14 @@ const GitHubEditor = () => {
             value={branch}
             onChange={(e) => setBranch(e.target.value)}
             placeholder="Branch"
+          />
+          <TextField
+            label="Path"
+            variant="outlined"
+            fullWidth
+            value={path}
+            onChange={(e) => setPath(e.target.value)}
+            placeholder="File Path"
           />
           <TextField
             label="Repository"

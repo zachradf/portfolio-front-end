@@ -8,7 +8,7 @@ import {
   Typography,
   ThemeProvider,
 } from '@mui/material';
-import submitIssue from '../../features/utils/issueGitHub';
+import submitIssue from '../../features/utils/GitHub/submitIssue';
 import appTheme from '../../themes/app-theme'; // Import your theme
 
 interface SubmitIssueProps {

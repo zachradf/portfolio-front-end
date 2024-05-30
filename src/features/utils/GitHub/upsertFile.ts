@@ -1,5 +1,5 @@
 import axios from 'axios';
-type PushValues = {
+type upsertFileValues = {
   owner: string;
   repo: string;
   path: string;
@@ -7,11 +7,11 @@ type PushValues = {
   content: string;
   branch: string;
 };
-const updateFile = async (data: PushValues) => {
+const upsertFile = async (data: upsertFileValues) => {
   const { owner, repo, path, message, content, branch } = data;
   try {
     const response = await axios.post(
-      `/api/auth/github/push/${owner}/${repo}`,
+      `/api/auth/github/upsert-file/${owner}/${repo}`,
       {
         owner,
         repo,
@@ -29,7 +29,7 @@ const updateFile = async (data: PushValues) => {
     console.error('Error updating file:', error);
   }
 };
-export default updateFile;
+export default upsertFile;
 // updateFile();
 // const express = require('express');
 // const { Octokit } = require('@octokit/rest');

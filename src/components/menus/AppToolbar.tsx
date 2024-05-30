@@ -11,7 +11,7 @@ import HideInfoButton from '../info-button/HideInfoButton';
 import InfoIcon from '../info-button/InfoIcon';
 import logoSrc from '../../logo.png';
 import { logoutUser } from '../../features/auth/authSlice';
-
+import appTheme from '../../themes/app-theme';
 const AppToolbar = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -59,7 +59,7 @@ const AppToolbar = () => {
   };
 
   return (
-    <Toolbar sx={{ backgroundColor: '#000000' }}>
+    <Toolbar sx={{ backgroundColor: appTheme.palette.primary.main }}>
       <Box
         component="img"
         src={logoSrc}
@@ -119,7 +119,9 @@ export default InfoIcon;`}
         </>
       ) : (
         <>
-          <Button onClick={onGitHubOauthClick}>GitHub Oauth</Button>
+          <Button onClick={onGitHubOauthClick} color="inherit">
+            GitHub Oauth
+          </Button>
           <Button onClick={onLogoutClick} color="inherit">
             Logout
           </Button>

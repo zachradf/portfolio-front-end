@@ -80,7 +80,7 @@ async function drawAvatar(username: string): Promise<HTMLCanvasElement> {
             className={classes.avatar}
           />
         </div>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" className={classes.handDrawnText}>
           {user?.username}
         </Typography>
         <Container>

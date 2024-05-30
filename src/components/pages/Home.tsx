@@ -12,7 +12,7 @@ import DashboardBox from '../dashboard/DashboardBox';
 import SideMenu from '../menus/SideMenu';
 import { authenticateUser, fetchSession } from '../../features/auth/authSlice';
 import { RootState } from '../../app/store';
-import FetchRepos from '../../features/utils/fetchGitHub';
+import FetchRepos from '../../features/utils/GitHub/fetchRepos';
 import GitHubViewer from '../content/GitHubViewer';
 
 const drawerWidth = 140;
