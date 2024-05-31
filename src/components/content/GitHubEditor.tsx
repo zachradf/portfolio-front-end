@@ -1,81 +1,82 @@
-import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import React, { useState, useEffect } from 'react';
 import {
   TextField,
   Button,
   Box,
   Typography,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Link,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import GitHubIcon from '@mui/icons-material/GitHub'; // Make sure to install @mui/icons-material if not already installed
+import GitHubIcon from '@mui/icons-material/GitHub';
+import EditIcon from '@mui/icons-material/Edit';
 import appTheme from '../../themes/app-theme';
 import upsertFile from '../../features/utils/GitHub/upsertFile';
+import fetchFileContent from '../../features/utils/GitHub/fetchFileContent';
+import ReactMarkdown from 'react-markdown';
 
-const GitHubEditor = () => {
-  const [markdown, setMarkdown] = useState('');
-  const [fullRepo, setRepo] = useState('');
-  const [branch, setBranch] = useState('');
-  const [path, setPath] = useState('');
-  const [commit, setCommitMessage] = useState('');
-  const [openDialog, setOpenDialog] = useState(false);
+interface EditorProps {
+  repoIdentifier: string; // Format expected: "username/repository"
+  fileContent: string;
+  onSave: () => void;
+}
+
+const GitHubEditor: React.FC<EditorProps> = ({
+  repoIdentifier,
+  fileContent,
+  onSave,
+}) => {
+  const [markdown, setMarkdown] = useState(fileContent);
+  const [path, setPath] = useState('README.md');
+  const [commit, setCommitMessage] = useState('Update README');
+  const [branch, setBranch] = useState('main');
+
+  const [owner, repo] = repoIdentifier.split('/');
 
   const saveContentToGitHub = async () => {
-    const [owner, repo] = fullRepo.split('/');
-    // const path = path; // You can make this dynamic
-    const message = commit;
-    const content = markdown;
-    upsertFile({ owner, repo, path, message, content, branch });
-  };
-
-  const handleCreateRepository = async () => {
-    const [owner, repo] = fullRepo.split('/');
-    // const path = 'README.md'; // You can make this dynamic
-    const path = 'README.md'; // You can make this dynamic
     const message = commit;
     const content = markdown;
 
-    upsertFile({ owner, repo, path, message, content, branch });
-    setOpenDialog(false);
-    // Implement repository creation logic here
+    await upsertFile({ owner, repo, path, message, content, branch });
+    onSave();
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const content = await fetchFileContent(owner, repo, path, branch);
+      console.log(
+        'path, branch, and content in useEffect',
+        path,
+        branch,
+        content
+      );
+
+      setMarkdown(content);
+    };
+    fetchData();
+  }, [owner, repo, path, branch]);
 
   return (
     <ThemeProvider theme={appTheme}>
       <Container maxWidth="sm">
-        <Box sx={{ my: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography variant="h4" gutterBottom>
-            GitHub Markdown Editor
+        <Box sx={{ my: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Edit File
           </Typography>
+          <TextField
+            label="File Path"
+            variant="outlined"
+            fullWidth
+            value={path}
+            onChange={(e) => setPath(e.target.value)}
+          />
           <TextField
             label="Branch"
             variant="outlined"
             fullWidth
             value={branch}
             onChange={(e) => setBranch(e.target.value)}
-            placeholder="Branch"
-          />
-          <TextField
-            label="Path"
-            variant="outlined"
-            fullWidth
-            value={path}
-            onChange={(e) => setPath(e.target.value)}
-            placeholder="File Path"
-          />
-          <TextField
-            label="Repository"
-            variant="outlined"
-            fullWidth
-            value={fullRepo}
-            onChange={(e) => setRepo(e.target.value)}
-            placeholder="Enter repo (username/repo)"
           />
           <TextField
             label="Commit Message"
@@ -95,10 +96,10 @@ const GitHubEditor = () => {
           />
           <Box
             sx={{
+              mt: 2,
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              mb: 2,
             }}
           >
             <Button
@@ -108,48 +109,20 @@ const GitHubEditor = () => {
             >
               Save to GitHub
             </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => setOpenDialog(true)}
+            <IconButton
+              aria-label="go to GitHub repository"
+              component={Link}
+              href={`https://github.com/${repoIdentifier}`}
+              target="_blank"
+              rel="noopener"
             >
-              Create New Repository
-            </Button>
-            <Box sx={{ textAlign: 'center' }}>
-              <IconButton
-                aria-label="go to GitHub repository"
-                component={Link}
-                href={`https://github.com/${fullRepo}`}
-                target="_blank"
-                rel="noopener"
-              >
-                <GitHubIcon />
-              </IconButton>
-            </Box>
+              <GitHubIcon />
+            </IconButton>
           </Box>
-        </Box>
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-          <DialogTitle>Create New Repository</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Repository Name"
-              type="text"
-              fullWidth
-              variant="outlined"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-            <Button onClick={handleCreateRepository}>Create</Button>
-          </DialogActions>
-        </Dialog>
-        <Box sx={{ bgcolor: 'background.paper', p: 2, mt: 2 }}>
-          <Typography variant="h6" gutterBottom component="div">
-            Markdown Preview
-          </Typography>
-          <ReactMarkdown>{markdown}</ReactMarkdown>
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="h6">Markdown Preview</Typography>
+            <ReactMarkdown>{markdown}</ReactMarkdown>
+          </Box>
         </Box>
       </Container>
     </ThemeProvider>

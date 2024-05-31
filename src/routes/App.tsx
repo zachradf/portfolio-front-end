@@ -35,7 +35,7 @@ function App() {
           />
           <Route path="/" Component={Home} />
           <Route path="api/github" Component={OAuth} />
-          <Route path="/editor" Component={GitHubEditor} />
+          {/* <Route path="/editor" Component={GitHubEditor} /> */}
           <Route path="/error" Component={Error} />
         </Routes>
       </Router>
